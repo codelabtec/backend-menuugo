@@ -8,7 +8,7 @@ const cadastrarUsuario = async (req, res) => {
   console.log('Dados recebidos para cadastro:', { nome, email, senha, numero }); // Verifique os dados recebidos
 
   try {
-    //salva o usuário no banco de dados
+    //salva um novo usuário no banco de dados
     const usuario = await usuarioService.criarUsuario(nome, email, senha, numero);
     res.status(201).json({ message: 'Usuário cadastrado com sucesso!', usuario });
   } catch (err) {
