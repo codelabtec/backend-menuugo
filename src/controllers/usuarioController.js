@@ -1,5 +1,5 @@
 // controllers/usuarioController.js
-const usuarioService = require('../services/usuarioService');
+import usuarioService from '../services/usuarioService.js'; // Corrigido para importar o serviço de usuário
 
 // Função para cadastrar o usuário
 const cadastrarUsuario = async (req, res) => {
@@ -8,6 +8,7 @@ const cadastrarUsuario = async (req, res) => {
   console.log('Dados recebidos para cadastro:', { nome, email, senha, numero }); // Verifique os dados recebidos
 
   try {
+    //salva o usuário no banco de dados
     const usuario = await usuarioService.criarUsuario(nome, email, senha, numero);
     res.status(201).json({ message: 'Usuário cadastrado com sucesso!', usuario });
   } catch (err) {
@@ -23,10 +24,14 @@ const loginUsuario = async (req, res) => {
 
   try {
     const usuario = await usuarioService.loginUsuario(email, senha);
+
+    //verifica se o usuário existe
     if (!usuario) {
       return res.status(404).json({ message: 'Usuário ou senha inválidos' });
     }
+
     res.status(200).json({ message: 'Login realizado com sucesso!', usuario });
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -44,7 +49,7 @@ const recuperarSenha = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   cadastrarUsuario,
   loginUsuario,
   recuperarSenha

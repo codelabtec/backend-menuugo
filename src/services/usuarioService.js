@@ -78,3 +78,9 @@ export async function recuperarSenha(email) {
     throw new Error('Erro ao recuperar senha.');
   }
 }
+
+export default { 
+  criarUsuario,
+  loginUsuario,
+  recuperarSenha
+};

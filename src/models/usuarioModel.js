@@ -1,5 +1,5 @@
-const { createClient } = require('@supabase/supabase-js');
-const dotenv = require('dotenv');
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 dotenv.config();
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
@@ -24,7 +24,7 @@ const getUserByEmail = async (email) => {
   return data;
 };
 
-module.exports = {
+export default {
   createUser,
   getUserByEmail,
 };
