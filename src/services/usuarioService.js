@@ -1,5 +1,10 @@
 import { supabase } from '../config/supabase.js';
 import generateCode from '../utils/generateCode.js';
+import 'dotenv/config';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 // ✅ Criar um novo usuário
 export async function criarUsuario(nome, email, senha, numero) {
@@ -72,12 +77,147 @@ export async function recuperarSenha(email) {
       throw new Error('Erro ao atualizar o código de recuperação.');
     }
 
+    try{ 
+      const result = await resend.emails.send({
+        from: 'MenuuGo - Cardápios Digitais <no-reply@menuugo.com>',
+        to: [email],
+        subject: 'Recuperação de Senha',
+        html:`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Recuperação de Senha Menuugo</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+            
+            body {
+              margin: 0;
+              padding: 0;
+              background-color: #f5f5f5;
+              font-family: 'Inter', sans-serif;
+            }
+            
+            .container {
+              max-width: 600px;
+              margin: 0 auto;
+              background-color: #E71D36;
+              overflow: hidden;
+            }
+            
+            .header {
+              text-align: center;
+              padding: 16px 0;
+              background-color: #E71D36;
+            }
+            
+            .header img {
+              width: 150px;
+              margin: 0 auto;
+              display: block;
+            }
+            
+            .content {
+              background-color: white;
+              padding: 30px;
+              border-radius: 0px;
+            }
+            
+            h1 {
+              text-align: center;
+              color: #1F1E1E;
+              font-weight: 600;
+              margin-top: 0;
+              font-size: 32px;
+              line-height: 120%;
+            }
+            
+            p {
+              color: #555;
+              line-height: 1.6;
+              margin: 15px 0;
+            }
+            
+            .code {
+              font-size: 24px;
+              background-color: #EBEBEB;
+              padding: 16px;
+              border-radius: 8px;
+              color: #238F19;
+              text-align: center;
+              font-weight: 600;
+              margin: 20px 0;
+            }
+            
+            hr {
+              border: none;
+              height: 1px;
+              background-color: #eee;
+              margin: 30px 0 20px;
+            }
+            
+            .footer {
+              text-align: center;
+              padding: 20px;
+              background-color: #E71D36;
+              color: white;
+            }
+            
+            .footer small {
+              color: rgba(255, 255, 255, 0.8);
+              font-size: 12px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <img src="https://menuugo.com/assets/logo.png" alt="Logo Menuugo" />
+            </div>
+            
+            <div class="content">
+              <h1>Recuperação de Senha</h1>
+              
+              <p>Olá! Seu código de recuperação é:</p>
+              
+              <div class="code">
+                ${codigoRecuperacao}
+              </div>
+              
+              <p>
+                Use este código para redefinir sua senha. Caso não tenha solicitado,
+                ignore este e-mail.
+              </p>
+              
+              <hr />
+            </div>
+            
+            <div class="footer">
+              <small>© 2025 Menuugo. Todos os direitos reservados.</small>
+            </div>
+      </div>
+    </body>
+    `,
+
+      });
+      console.log('Email enviado com sucesso:', result);
+    }
+    catch (error) {
+      console.error('🚨 Erro ao enviar email:', error.message);
+      throw new Error('Erro ao enviar email de recuperação.');
+    }
+    
+
     return { message: 'Código de recuperação enviado.' };
+
   } catch (err) {
     console.error('❌ Erro na função de recuperação de senha:', err.message);
     throw new Error('Erro ao recuperar senha.');
   }
 }
+
+
 
 export default { 
   criarUsuario,
