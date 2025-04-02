@@ -4,13 +4,13 @@ import usuarioService from '../services/usuarioService.js'; // Corrigido para im
 // Função para cadastrar o usuário
 const cadastrarUsuario = async (req, res) => {
 
-  
-  console.log('Dados recebidos para cadastro:', { nome, email, senha, numero }); // Verifique os dados recebidos
-  
   try {
     
     const { nome, email, senha, numero } = req.body;
-
+    
+    console.log('Dados recebidos para cadastro:', { nome, email, senha, numero }); // Verifique os dados recebidos
+    
+    
     // Validações básicas
     if (!nome || !email || !senha || !numero) {
       return res.status(400).json({ 

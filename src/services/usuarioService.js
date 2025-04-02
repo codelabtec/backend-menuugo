@@ -9,7 +9,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // ✅ Criar um novo usuário
 export async function criarUsuario(nome, email, senha, numero) {
   try {
-    console.log('📥 Dados recebidos:', { nome, email, senha, numero });
+    // console.log('📥 Dados recebidos:', { nome, email, senha, numero });
 
      // Primeiro, verificar se o email já existe
      const { data: usuarioExistente, error: checkError } = await supabase
@@ -46,7 +46,7 @@ export async function criarUsuario(nome, email, senha, numero) {
     console.log('✅ Usuário cadastrado com sucesso:', data);
     return {
       success: true,
-      data,
+      data: data,
       message: 'Usuário cadastrado com sucesso!',
     };
 
