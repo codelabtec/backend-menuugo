@@ -3,14 +3,39 @@ import usuarioService from '../services/usuarioService.js'; // Corrigido para im
 
 // Função para cadastrar o usuário
 const cadastrarUsuario = async (req, res) => {
-  const { nome, email, senha, numero } = req.body;
 
+  
   console.log('Dados recebidos para cadastro:', { nome, email, senha, numero }); // Verifique os dados recebidos
-
+  
   try {
+    
+    const { nome, email, senha, numero } = req.body;
+
+    // Validações básicas
+    if (!nome || !email || !senha || !numero) {
+      return res.status(400).json({ 
+        message: 'Todos os campos são obrigatórios' 
+      });
+    }
+    
     //salva um novo usuário no banco de dados
     const usuario = await usuarioService.criarUsuario(nome, email, senha, numero);
     res.status(201).json({ message: 'Usuário cadastrado com sucesso!', usuario });
+  
+    // Verificar se houve erro de email já existente
+    if (result.error && result.code === 'EMAIL_EXISTS') {
+      return res.status(400).json({
+        code: 'EMAIL_EXISTS',
+        message: result.message
+      });
+    }
+
+    // Se não houve erro, retornar sucesso
+    return res.status(201).json({
+      message: result.message || 'Usuário cadastrado com sucesso',
+      data: result.data
+    });
+  
   } catch (err) {
     console.log('Erro na função de cadastro:', err);  // Verifique o erro
     res.status(500).json({ message: err.message });

@@ -11,18 +11,45 @@ export async function criarUsuario(nome, email, senha, numero) {
   try {
     console.log('📥 Dados recebidos:', { nome, email, senha, numero });
 
-    const { data, error } = await supabase
-      .from('Usuarios') // Certifique-se de que a tabela está corretamente nomeada
-      .insert([{ nome, email, senha, numero }])
-      .select(); // Retorna os dados inseridos
-
-    if (error) {
-      console.error('🚨 Erro ao tentar inserir no Supabase:', error.message);
-      throw new Error(`Erro ao cadastrar usuário: ${error.message}`);
-    }
+     // Primeiro, verificar se o email já existe
+     const { data: usuarioExistente, error: checkError } = await supabase
+     .from('Usuarios')
+     .select('email')
+     .eq('email', email)
+     .maybeSingle();
+   
+   if (checkError) {
+     console.error('🚨 Erro ao verificar email existente:', checkError.message);
+     throw new Error(`Erro ao verificar email: ${checkError.message}`);
+   }
+   
+   if (usuarioExistente) {
+     // Retornar um objeto de erro formatado para ser capturado pelo controller
+     return { 
+       error: true, 
+       code: 'EMAIL_EXISTS',
+       message: 'Este email já está cadastrado' 
+     };
+   }
+   
+   // Se o email não existe, prosseguir com a inserção
+   const { data, error } = await supabase
+     .from('Usuarios')
+     .insert([{ nome, email, senha, numero }])
+     .select();
+   
+   if (error) {
+     console.error('🚨 Erro ao tentar inserir no Supabase:', error.message);
+     throw new Error(`Erro ao cadastrar usuário: ${error.message}`);
+   }
 
     console.log('✅ Usuário cadastrado com sucesso:', data);
-    return data;
+    return {
+      success: true,
+      data,
+      message: 'Usuário cadastrado com sucesso!',
+    };
+
   } catch (err) {
     console.error('❌ Erro na função de cadastro:', err.message);
     throw new Error('Erro ao cadastrar usuário.');
