@@ -9,5 +9,8 @@ const router = Router();
 router.post('/cadastrar', usuarioController.cadastrarUsuario);
 router.post('/login', usuarioController.loginUsuario);
 router.post('/recuperar-senha', usuarioController.recuperarSenha);
+router.post('/redefinir-senha', usuarioController.atualizarSenhaComCodigo);
+
+
 
 export default router;

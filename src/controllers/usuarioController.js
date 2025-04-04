@@ -74,8 +74,23 @@ const recuperarSenha = async (req, res) => {
   }
 };
 
+// Função para atualizar a senha com código de recuperação
+const atualizarSenhaComCodigo = async (req, res) => {
+  const { email, codigo, novaSenha } = req.body;
+
+  try {
+    const result = await usuarioService.atualizarSenhaComCodigo(email, codigo, novaSenha);
+    res.status(200).json({ message: result.message });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+
+
 export default {
   cadastrarUsuario,
   loginUsuario,
-  recuperarSenha
+  recuperarSenha,
+  atualizarSenhaComCodigo
 };
